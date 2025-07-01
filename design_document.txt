@@ -1,0 +1,108 @@
+## 1. 全体概要
+
+| 項目   | 内容                                                                                                                    |
+| ---- | --------------------------------------------------------------------------------------------------------------------- |
+| アプリ名 | **GroupTrip Planner**（仮）                                                                                              |
+| 目的   | 団体旅行担当者が、ヒアリング～プラン提示～社内見積情報取得までをワンストップで行う                                                                             |
+| 特長   | ①対話式ヒアリルゴリズムを実行し `TripPlan` を返却
+
+4. **プラン確認画面**
+
+   * サイドタブで「行程」「スポット」「宿泊」「補足」「社内メモ」を切替表示
+   * 「テキストコピー」ボタンでクリップボードへ
+   * （将来）「PDF出力」ボタン
+
+5. **再ヒアリング / 修正**
+
+   * 任意の設問へ戻り → 再生成
+
+---
+
+## 3. 画面仕様
+
+### 3.1 index.html（トップ）
+
+| 要素     | 内容                   |
+| ------ | -------------------- |
+| Header | ロゴ + タイトル            |
+| Main   | ヒーロー画像＋「新規プラン作成」 CTA |
+| Footer | 免責・バージョン等            |
+
+### 3.2 hearing.html（Wizard）
+
+| ステップ | 設問例（2文以内）                  | モデルに保存するキー                                     |
+| ---- | -------------------------- | ---------------------------------------------- |
+| 基本情報 | 出発日は？／ご予定の人数と年代は？          | `startDat… トップ
+├─ hearing.html      … ヒアリング UI
+├─ plan.html         … プラン表示
+├─ css/
+│   ├─ main.css
+│   └─ theme.css
+├─ js/
+│   ├─ app.js        … ルーティング
+│   ├─ hearing.js    … ヒアリング制御
+│   ├─ planner.js    … PlannerEngine
+│   ├─ formatter.js  … 出力フォーマッタ
+│   └─ data/
+│       ├─ flights.js (CSV or JSON)
+│       └─ spots.js  (主要観光地マスタ)
+└─ assets/
+    └─ images/
+```
+
+---
+
+## 5. データモデル（TypeScript 風記法）
+
+```ts
+type TripRequest = {
+  startDate: string; // YYYY-MM-DD
+  days: number;
+  pax: number;
+  ageGroup: "youth" | "adult" | "senior";
+  destination: string;
+  depAirport: string;
+  arrAirport: string;
+  timeBand: "morning" | "afternoon" | "evening";
+  hotelType: "business" | "onsen" | "resort";
+  roomType: "single" | "twin" | "triple";
+  mealPlan: "breakfast" | "half" | "full";
+  banquet: boolean;
+  busSize: "large" | "medium";
+ 4. **時間配分**
+
+   * ホテル発 08:00–08:30、ホテル着 17:00–18:00 に収まるよう貪欲法
+   * オーバー時は観光地を削除 or 再ヒアリングフラグを返却
+
+5. **フォーマット生成** (`formatter.js`)
+
+   * 行程①②③④⑤ / 社内メモを文字列で返す
+
+---
+
+## 7. UI / UX 指針
+
+* **モバイルファースト**：団体営業が外出先でも確認できる
+* **ダークモード対応**：`prefers-color-scheme`
+* **アクセシビリティ**：フォーム要素ラベル、タブの ARIA 属性
+
+---
+
+## 8. 外部 API / データスタブ
+
+| 用途        | API / 代替                                         |
+| --------- | ------------------------------------------------ |
+| 距離 & 移動時間 | Google Maps Distance Matrix（Key 必要／開発時はダミー JSON） |
+| 観光地基本情報   | Google Places Details or DB ファイル                 |
+| 航空時刻表     | 航空会社公開 CSV → `flights.js` に変換                    |
+|.バス駐車場要予約。
+```
+
+---
+
+## 10. 拡張ロードマップ（任意）
+
+* PDF / Word エクスポート（jsPDF + html2canvas）
+* プラン履歴保存（IndexedDB → 将来 Firestore）
+* AI 自動改善提案（Gemini Pro API 連携）
+* 多言語 UI（i18n JSON）

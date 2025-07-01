@@ -1,0 +1,21 @@
+/* theme.css */
+/* ダークモード対応など、テーマに関するスタイルを記述 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #333;
+        color: #f4f4f4;
+    }
+    header,
+    footer {
+        background-color: #222;
+    }
+    .hero {
+        background-color: #444;
+    }
+    button {
+        background-color: #0056b3;
+    }
+    button:hover {
+        background-color: #007bff;
+    }
+}

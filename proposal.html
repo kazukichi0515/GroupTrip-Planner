@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企画案確認 - GroupTrip Planner</title>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <header>
+        <h1>企画案の確認</h1>
+    </header>
+
+    <main class="container">
+        <h2>AIが生成した企画案の概要</h2>
+        <div id="proposalSummary" class="plan-output" style="min-height: 200px;">
+            <!-- AIが生成した企画案の概要がここに表示されます -->
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button id="createProposalBtn" class="cta-button">この内容で企画書を作成</button>
+            <button id="backToMemoBtn" class="cta-button" style="background-color: #6c757d;">メモを修正する</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 GroupTrip Planner</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const proposal = JSON.parse(sessionStorage.getItem('generatedProposal'));
+            if (proposal) {
+                document.getElementById('proposalSummary').textContent = proposal.summary;
+            } else {
+                document.getElementById('proposalSummary').textContent = "企画案がありません。メモ入力画面に戻って生成してください。";
+            }
+
+            document.getElementById('createProposalBtn').addEventListener('click', () => {
+                // fullTripPlanをsessionStorageに保存し、plan.htmlで利用できるようにする
+                const fullTripPlan = proposal.fullTripPlan;
+                sessionStorage.setItem('tripRequest', JSON.stringify(fullTripPlan.request));
+                sessionStorage.setItem('generatedTripPlan', JSON.stringify(fullTripPlan)); // 新しく追加
+
+                window.location.href = 'plan.html';
+            });
+
+            document.getElementById('backToMemoBtn').addEventListener('click', () => {
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>
