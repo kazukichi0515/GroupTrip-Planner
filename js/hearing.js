@@ -3,147 +3,78 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     const hearingForm = document.getElementById('hearingForm');
-    const questionContainer = document.getElementById('questionContainer');
-
-    const questions = [
-        {
-            step: "基本情報",
-            question: "出発日は？",
-            key: "startDate",
-            type: "date"
-        },
-        {
-            step: "基本情報",
-            question: "ご予定の人数は？",
-            key: "pax",
-            type: "number"
-        },
-        {
-            step: "基本情報",
-            question: "年代は？",
-            key: "ageGroup",
-            type: "select",
-            options: ["youth", "adult", "senior"]
-        },
-        {
-            step: "基本情報",
-            question: "目的地は？",
-            key: "destination",
-            type: "text"
-        },
-        {
-            step: "基本情報",
-            question: "出発空港は？",
-            key: "depAirport",
-            type: "text"
-        },
-        {
-            step: "基本情報",
-            question: "到着空港は？",
-            key: "arrAirport",
-            type: "text"
-        },
-        {
-            step: "基本情報",
-            question: "希望の時間帯は？",
-            key: "timeBand",
-            type: "select",
-            options: ["morning", "afternoon", "evening"]
-        },
-        {
-            step: "宿泊",
-            question: "ホテルのタイプは？",
-            key: "hotelType",
-            type: "select",
-            options: ["business", "onsen", "resort"]
-        },
-        {
-            step: "宿泊",
-            question: "部屋のタイプは？",
-            key: "roomType",
-            type: "select",
-            options: ["single", "twin", "triple"]
-        },
-        {
-            step: "宿泊",
-            question: "食事プランは？",
-            key: "mealPlan",
-            type: "select",
-            options: ["breakfast", "half", "full"]
-        },
-        {
-            step: "その他",
-            question: "宴会はありますか？",
-            key: "banquet",
-            type: "checkbox"
-        },
-        {
-            step: "その他",
-            question: "バスのサイズは？",
-            key: "busSize",
-            type: "select",
-            options: ["large", "medium"]
-        }
-    ];
-
-    let currentQuestionIndex = 0;
-    const tripRequest = {};
-
-    function renderQuestion() {
-        if (currentQuestionIndex < questions.length) {
-            const q = questions[currentQuestionIndex];
-            questionContainer.innerHTML = `
-                <div class="question-block">
-                    <h3>${q.step}</h3>
-                    <label for="${q.key}">${q.question}</label>
-                    ${generateInputHtml(q)}
-                </div>
-            `;
-        } else {
-            questionContainer.innerHTML = `<h2>ヒアリング完了！</h2><p>プラン生成ボタンを押してください。</p>`;
-            hearingForm.querySelector('button[type="submit"]').style.display = 'block';
-        }
-    }
-
-    function generateInputHtml(q) {
-        switch (q.type) {
-            case "date":
-                return `<input type="date" id="${q.key}" name="${q.key}" required>`;
-            case "number":
-                return `<input type="number" id="${q.key}" name="${q.key}" required>`;
-            case "text":
-                return `<input type="text" id="${q.key}" name="${q.key}" required>`;
-            case "select":
-                return `<select id="${q.key}" name="${q.key}" required>${q.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}</select>`;
-            case "checkbox":
-                return `<input type="checkbox" id="${q.key}" name="${q.key}">`;
-            default:
-                return '';
-        }
-    }
+    const overviewTextarea = document.getElementById('overview');
 
     hearingForm.addEventListener('submit', (event) => {
         event.preventDefault();
 
-        if (currentQuestionIndex < questions.length) {
-            const q = questions[currentQuestionIndex];
-            const inputElement = document.getElementById(q.key);
+        const overview = overviewTextarea.value;
+        console.log("入力された概要:", overview);
 
-            if (q.type === "checkbox") {
-                tripRequest[q.key] = inputElement.checked;
-            } else {
-                tripRequest[q.key] = inputElement.value;
-            }
+        // ここでAIによる内容分析をシミュレーション
+        // 実際にはAI APIを呼び出し、結果をTripRequestにマッピング
+        const simulatedTripRequest = simulateAIAnalysis(overview);
 
-            currentQuestionIndex++;
-            renderQuestion();
-        } else {
-            // 全ての質問が完了したら、tripRequestをlocalStorageに保存してplan.htmlへ遷移
-            localStorage.setItem('tripRequest', JSON.stringify(tripRequest));
-            window.location.href = 'plan.html';
-        }
+        // 生成したTripRequestをlocalStorageに保存して次の画面へ遷移
+        localStorage.setItem('tripRequest', JSON.stringify(simulatedTripRequest));
+        localStorage.setItem('overviewText', overview); // 元の概要も保存
+
+        window.location.href = 'preliminary_plan.html'; // 新しい中間画面へ遷移
     });
 
-    // 初期表示
-    renderQuestion();
+    /**
+     * AIによる内容分析をシミュレーションする関数
+     * 入力された概要テキストからキーワードを抽出し、ダミーのTripRequestを生成
+     * @param {string} overviewText - ユーザーが入力した概要テキスト
+     * @returns {object} シミュレートされたTripRequestオブジェクト
+     */
+    function simulateAIAnalysis(overviewText) {
+        const tripRequest = {
+            startDate: "2025-08-01", // ダミー
+            days: 3, // ダミー
+            pax: 4, // ダミー
+            ageGroup: "adult", // ダミー
+            destination: "沖縄", // ダミー
+            depAirport: "羽田", // ダミー
+            arrAirport: "那覇", // ダミー
+            timeBand: "morning", // ダミー
+            hotelType: "resort", // ダミー
+            roomType: "twin", // ダミー
+            mealPlan: "half", // ダミー
+            banquet: false, // ダミー
+            busSize: "medium" // ダミー
+        };
+
+        // キーワードによる簡易的な解析（例）
+        if (overviewText.includes("北海道")) {
+            tripRequest.destination = "北海道";
+            tripRequest.arrAirport = "新千歳";
+            tripRequest.hotelType = "business";
+        }
+        if (overviewText.includes("京都")) {
+            tripRequest.destination = "京都";
+            tripRequest.arrAirport = "伊丹";
+            tripRequest.hotelType = "onsen";
+        }
+        if (overviewText.includes("家族")) {
+            tripRequest.pax = 4;
+            tripRequest.ageGroup = "adult";
+        }
+        if (overviewText.includes("社員旅行")) {
+            tripRequest.pax = 30;
+            tripRequest.banquet = true;
+            tripRequest.busSize = "large";
+        }
+        if (overviewText.includes("3泊4日")) {
+            tripRequest.days = 4;
+        }
+        if (overviewText.includes("海")) {
+            tripRequest.hotelType = "resort";
+        }
+        if (overviewText.includes("温泉")) {
+            tripRequest.hotelType = "onsen";
+        }
+
+        return tripRequest;
+    }
 });

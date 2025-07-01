@@ -13,9 +13,12 @@
     </header>
     <main>
         <form id="hearingForm">
-            <!-- 質問はJavaScriptで動的に生成 -->
-            <div id="questionContainer"></div>
-            <button type="submit">プラン生成</button>
+            <h2>旅行の希望概要を入力してください</h2>
+            <div class="form-group">
+                <label for="overview">例: 家族4人で沖縄に3泊4日で行きたい。海で泳ぎたい。美味しい沖縄料理を食べたい。</label>
+                <textarea id="overview" name="overview" rows="10" placeholder="旅行の目的、人数、期間、目的地、希望するアクティビティや食事など、自由に記述してください。" required></textarea>
+            </div>
+            <button type="submit">AIにプラン概要を提案させる</button>
         </form>
     </main>
     <footer>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>プラン概要確認 - GroupTrip Planner</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+    <header>
+        <h1>プラン概要確認</h1>
+    </header>
+    <main>
+        <section class="plan-summary">
+            <h2>AIが提案するプラン概要</h2>
+            <div id="preliminaryPlanDetails"></div>
+            <div class="button-group">
+                <button id="createDetailedPlan">プラン作成</button>
+                <button id="reHearing">再ヒアリング / 修正</button>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 GroupTrip Planner</p>
+    </footer>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tripRequest = JSON.parse(localStorage.getItem('tripRequest'));
+            const overviewText = localStorage.getItem('overviewText');
+            const preliminaryPlanDetailsDiv = document.getElementById('preliminaryPlanDetails');
+            const createDetailedPlanButton = document.getElementById('createDetailedPlan');
+            const reHearingButton = document.getElementById('reHearing');
+
+            if (tripRequest) {
+                let displayHtml = `<h3>入力された希望概要:</h3><p>${overviewText || 'なし'}</p><hr>`;
+                displayHtml += `<h3>AI分析によるプランの方向性:</h3>`;
+                displayHtml += `<ul>`;
+                displayHtml += `<li>出発日: ${tripRequest.startDate || '未定'}</li>`;
+                displayHtml += `<li>日数: ${tripRequest.days || '未定'}日</li>`;
+                displayHtml += `<li>人数: ${tripRequest.pax || '未定'}名 (${tripRequest.ageGroup || '未定'})</li>`;
+                displayHtml += `<li>目的地: ${tripRequest.destination || '未定'}</li>`;
+                displayHtml += `<li>出発空港: ${tripRequest.depAirport || '未定'}</li>`;
+                displayHtml += `<li>到着空港: ${tripRequest.arrAirport || '未定'}</li>`;
+                displayHtml += `<li>希望時間帯: ${tripRequest.timeBand || '未定'}</li>`;
+                displayHtml += `<li>ホテルタイプ: ${tripRequest.hotelType || '未定'}</li>`;
+                displayHtml += `<li>部屋タイプ: ${tripRequest.roomType || '未定'}</li>`;
+                displayHtml += `<li>食事プラン: ${tripRequest.mealPlan || '未定'}</li>`;
+                displayHtml += `<li>宴会: ${tripRequest.banquet ? 'あり' : 'なし'}</li>`;
+                displayHtml += `<li>バスサイズ: ${tripRequest.busSize || '未定'}</li>`;
+                displayHtml += `</ul>`;
+                displayHtml += `<p>上記の内容でよろしければ「プラン作成」ボタンを押してください。</p>`;
+
+                preliminaryPlanDetailsDiv.innerHTML = displayHtml;
+
+                createDetailedPlanButton.addEventListener('click', () => {
+                    window.location.href = 'plan.html'; // 詳細プラン画面へ遷移
+                });
+
+                reHearingButton.addEventListener('click', () => {
+                    window.location.href = 'hearing.html'; // ヒアリング画面へ戻る
+                });
+
+            } else {
+                preliminaryPlanDetailsDiv.innerHTML = '<p>プラン概要情報が見つかりません。ヒアリングからやり直してください。</p>';
+                createDetailedPlanButton.style.display = 'none';
+                reHearingButton.textContent = 'ヒアリングに戻る';
+                reHearingButton.addEventListener('click', () => {
+                    window.location.href = 'hearing.html';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
